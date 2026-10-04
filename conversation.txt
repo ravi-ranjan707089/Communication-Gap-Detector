@@ -1,0 +1,38 @@
+TEST CASE 1
+Neha: What time is the meeting?
+Ravi: I am working on the report.
+Soham: Can you send the dataset?
+Ravi: Okay, I will check.
+Soham: Can you send the dataset?
+Neha: Which room is the meeting in?
+Aditya: I will prepare the presentation.
+Ravi: The report will be ready soon.
+Soham: Can you also share the dataset?
+Aditya: What do you mean by the final version?
+Neha: Can you clarify which meeting you mean?
+Ravi: The team meeting.
+Aditya: I still don't understand which file you are referring to.
+Soham: Can you send the dataset?
+
+
+TEST CASE 2
+Neha: What is the deadline for the report?
+Ravi: I am working on the introduction.
+Soham: Please upload the dataset.
+Aditya: I am preparing the slides.
+Soham: Please upload the dataset.
+Neha: What is the deadline?
+Aditya: Can you explain the final requirement?
+Ravi: I will check the document.
+Aditya: I still don't understand the final requirement.
+Soham: Please upload the dataset.
+
+TEST CASE 3
+Neha: What time is the presentation?
+Ravi: The presentation is at 2 PM.
+Soham: Can you send me the project report?
+Ravi: Yes, I have sent the report.
+Soham: Thanks.
+Aditya: Which room are we using?
+Neha: Room 301.
+Aditya: Perfect, thank you.

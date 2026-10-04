@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Communication Gap Detector</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 28px 40px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .input-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .input-section h2 {
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 230px;
+            padding: 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            margin-top: 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        /* Statistics */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .stat-card .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* Section */
+
+        .section-title {
+            margin-bottom: 18px;
+            font-size: 24px;
+        }
+
+        /* Gap cards */
+
+        .gap-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            border-left: 5px solid #2563eb;
+        }
+
+        .gap-type {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .speaker {
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-style: italic;
+            border: 1px solid #e2e8f0;
+        }
+
+        .evidence,
+        .explanation,
+        .repeated-at {
+            margin-top: 9px;
+            line-height: 1.5;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #334155;
+        }
+
+        /* Unresolved topics */
+
+        .topic-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+            border-left: 5px solid #f59e0b;
+        }
+
+        .topic-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .topic-name {
+            display: inline-block;
+            background: #fff7ed;
+            color: #c2410c;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .empty {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            text-align: center;
+            color: #64748b;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1100px) {
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 450px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .input-section {
+                padding: 18px;
+            }
+
+            textarea {
+                height: 200px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            Communication Gap Detector
+        </h1>
+
+        <p>
+            Detect unanswered questions, repeated requests,
+            repeated clarifications, and unresolved topics
+            in group conversations.
+        </p>
+
+    </div>
+
+
+
+    <div class="container">
+
+
+        <!-- INPUT SECTION -->
+
+        <div class="input-section">
+
+            <h2>
+                Analyze Conversation
+            </h2>
+
+            <textarea
+                id="conversation"
+                placeholder="Paste your group conversation here..."></textarea>
+
+            <button
+                id="analyzeButton"
+                onclick="analyzeConversation()">
+
+                Analyze Conversation
+
+            </button>
+
+            <div
+                id="loading"
+                class="loading">
+
+                Analyzing conversation...
+
+            </div>
+
+            <div
+                id="error"
+                class="error">
+            </div>
+
+        </div>
+
+
+
+        <!-- DASHBOARD -->
+
+        <div
+            id="dashboard"
+            style="display:none;">
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats">
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Messages Analyzed
+                    </h3>
+
+                    <div
+                        id="totalMessages"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Communication Gaps
+                    </h3>
+
+                    <div
+                        id="totalGaps"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Unanswered Questions
+                    </h3>
+
+                    <div
+                        id="unanswered"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Repeated Requests
+                    </h3>
+
+                    <div
+                        id="repeated"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Repeated Clarifications
+                    </h3>
+
+                    <div
+                        id="clarifications"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Unresolved Topics
+                    </h3>
+
+                    <div
+                        id="unresolved"
+                        class="number">
+
+                        0
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- COMMUNICATION GAPS -->
+
+            <h2 class="section-title">
+
+                Detected Communication Gaps
+
+            </h2>
+
+
+            <div id="gaps"></div>
+
+
+
+            <!-- UNRESOLVED TOPICS -->
+
+            <h2
+                class="section-title"
+                style="margin-top: 35px;">
+
+                Unresolved Topics
+
+            </h2>
+
+
+            <div id="topics"></div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="footer">
+
+        Communication Gap Detector • Hackathon Prototype
+
+    </div>
+
+
+
+    <script>
+
+
+        async function analyzeConversation() {
+
+
+            const conversation =
+                document.getElementById(
+                    "conversation"
+                ).value;
+
+
+            const error =
+                document.getElementById(
+                    "error"
+                );
+
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            const button =
+                document.getElementById(
+                    "analyzeButton"
+                );
+
+
+            error.textContent = "";
+
+
+            if (!conversation.trim()) {
+
+                error.textContent =
+                    "Please enter a conversation.";
+
+                return;
+
+            }
+
+
+            loading.style.display =
+                "block";
+
+            button.disabled = true;
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "/analyze",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    conversation:
+                                        conversation
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    error.textContent =
+                        data.error ||
+                        "Something went wrong.";
+
+                    return;
+
+                }
+
+
+                displayResults(data);
+
+
+            }
+
+            catch (err) {
+
+                console.error(err);
+
+                error.textContent =
+                    "Unable to connect to the Flask server.";
+
+            }
+
+            finally {
+
+                loading.style.display =
+                    "none";
+
+                button.disabled =
+                    false;
+
+            }
+
+        }
+
+
+
+        function displayResults(data) {
+
+
+            document.getElementById(
+                "dashboard"
+            ).style.display =
+                "block";
+
+
+            /* Messages */
+
+            document.getElementById(
+                "totalMessages"
+            ).textContent =
+                data.messages.length;
+
+
+            /* Communication gaps */
+
+            document.getElementById(
+                "totalGaps"
+            ).textContent =
+                data.total_gaps;
+
+
+            /* Unanswered */
+
+            const unanswered =
+                data.gaps.filter(
+
+                    gap =>
+                        gap.type ===
+                        "Potentially Unanswered Question"
+
+                ).length;
+
+
+            /* Repeated requests */
+
+            const repeated =
+                data.gaps.filter(
+
+                    gap =>
+                        gap.type ===
+                        "Repeated Request"
+
+                ).length;
+
+
+            /* Clarifications */
+
+            const clarifications =
+                data.gaps.filter(
+
+                    gap =>
+                        gap.type ===
+                        "Repeated Clarification"
+
+                ).length;
+
+
+            /* Unresolved topics */
+
+            const unresolved =
+                data.unresolved_topics
+                    ? data.unresolved_topics.length
+                    : 0;
+
+
+            document.getElementById(
+                "unanswered"
+            ).textContent =
+                unanswered;
+
+
+            document.getElementById(
+                "repeated"
+            ).textContent =
+                repeated;
+
+
+            document.getElementById(
+                "clarifications"
+            ).textContent =
+                clarifications;
+
+
+            document.getElementById(
+                "unresolved"
+            ).textContent =
+                unresolved;
+
+
+
+            /* =========================
+               COMMUNICATION GAP CARDS
+            ========================= */
+
+            const gapsContainer =
+                document.getElementById(
+                    "gaps"
+                );
+
+
+            gapsContainer.innerHTML =
+                "";
+
+
+            if (data.gaps.length === 0) {
+
+                gapsContainer.innerHTML = `
+
+                    <div class="empty">
+
+                        <h3>
+                            No Communication Gaps Detected
+                        </h3>
+
+                        <p style="margin-top:8px;">
+                            No gaps were detected using
+                            the current rules.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+            else {
+
+                data.gaps.forEach(
+
+                    (gap, index) => {
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "gap-card";
+
+
+                        let repeatedInfo =
+                            "";
+
+
+                        if (gap.repeated_at) {
+
+                            repeatedInfo = `
+
+                                <div class="repeated-at">
+
+                                    <span class="label">
+                                        Repeated At:
+                                    </span>
+
+                                    Message
+                                    ${gap.repeated_at}
+
+                                </div>
+
+                            `;
+
+                        }
+
+
+                        card.innerHTML = `
+
+                            <div class="gap-type">
+
+                                Gap #${index + 1}
+                                —
+                                ${escapeHTML(
+                                    gap.type
+                                )}
+
+                            </div>
+
+
+                            <div class="speaker">
+
+                                Speaker:
+                                ${escapeHTML(
+                                    gap.speaker
+                                )}
+
+                            </div>
+
+
+                            <div class="message">
+
+                                "${escapeHTML(
+                                    gap.message
+                                )}"
+
+                            </div>
+
+
+                            ${repeatedInfo}
+
+
+                            <div class="evidence">
+
+                                <span class="label">
+                                    Evidence:
+                                </span>
+
+                                ${escapeHTML(
+                                    gap.evidence
+                                )}
+
+                            </div>
+
+
+                            <div class="explanation">
+
+                                <span class="label">
+                                    Explanation:
+                                </span>
+
+                                ${escapeHTML(
+                                    gap.explanation
+                                )}
+
+                            </div>
+
+                        `;
+
+
+                        gapsContainer.appendChild(
+                            card
+                        );
+
+                    }
+
+                );
+
+            }
+
+
+
+            /* =========================
+               UNRESOLVED TOPICS
+            ========================= */
+
+            const topicsContainer =
+                document.getElementById(
+                    "topics"
+                );
+
+
+            topicsContainer.innerHTML =
+                "";
+
+
+            if (
+                !data.unresolved_topics ||
+                data.unresolved_topics.length === 0
+            ) {
+
+                topicsContainer.innerHTML = `
+
+                    <div class="empty">
+
+                        <h3>
+                            No Unresolved Topics
+                        </h3>
+
+                        <p style="margin-top:8px;">
+                            All detected requests appear
+                            to have a clear completion.
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+            else {
+
+
+                data.unresolved_topics.forEach(
+
+                    (topic, index) => {
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "topic-card";
+
+
+                        card.innerHTML = `
+
+                            <div class="topic-title">
+
+                                Topic #${index + 1}
+
+                            </div>
+
+
+                            <div class="topic-name">
+
+                                ${escapeHTML(
+                                    topic.topic
+                                )}
+
+                            </div>
+
+
+                            <div class="speaker">
+
+                                Speaker:
+                                ${escapeHTML(
+                                    topic.speaker
+                                )}
+
+                            </div>
+
+
+                            <div class="repeated-at">
+
+                                <span class="label">
+                                    Original Message:
+                                </span>
+
+                                Message
+                                ${topic.message_id}
+
+                            </div>
+
+
+                            <div class="repeated-at">
+
+                                <span class="label">
+                                    Repeated At:
+                                </span>
+
+                                Message
+                                ${topic.repeated_at}
+
+                            </div>
+
+
+                            <div class="evidence">
+
+                                <span class="label">
+                                    Evidence:
+                                </span>
+
+                                ${escapeHTML(
+                                    topic.evidence
+                                )}
+
+                            </div>
+
+
+                            <div class="explanation">
+
+                                <span class="label">
+                                    Explanation:
+                                </span>
+
+                                ${escapeHTML(
+                                    topic.explanation
+                                )}
+
+                            </div>
+
+                        `;
+
+
+                        topicsContainer.appendChild(
+                            card
+                        );
+
+                    }
+
+                );
+
+            }
+
+        }
+
+
+
+        /* =========================
+           HTML ESCAPING
+        ========================= */
+
+        function escapeHTML(text) {
+
+            if (
+                text === undefined ||
+                text === null
+            ) {
+
+                return "";
+
+            }
+
+
+            return String(text)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
